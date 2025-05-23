@@ -22,10 +22,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  tenants: [{
-    tenantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tenant', required: true },
-    role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' }
-  }],
   isActive: {
     type: Boolean,
     default: true
@@ -38,8 +34,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // Index for efficient queries
-userSchema.index({ email: 1, tenantId: 1 }, { unique: true });
-userSchema.index({ tenantId: 1 });
+userSchema.index({ email: 1 }, { unique: true });
 
 const User = mongoose.model('User', userSchema);
 

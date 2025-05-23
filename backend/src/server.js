@@ -86,6 +86,7 @@ fastify.register(require('./routes/roles'), { prefix: '/roles' });
 fastify.register(require('./routes/policies'), { prefix: '/policies' });
 fastify.register(require('./routes/tenants'), { prefix: '/tenants' });
 fastify.register(require('./routes/permissions'), { prefix: '/permissions' });
+fastify.register(require('./routes/userTenantRoles'), { prefix: '/userTenantRoles' });
 
 // Health check route
 fastify.get('/health', async (request, reply) => {

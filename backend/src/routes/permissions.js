@@ -1,6 +1,6 @@
 const opaService = require('../services/opa');
 const User = require('../models/user');
-const { evaluatePolicy } = require('../services/opa');
+const userTenantRoleService = require('../services/userTenantRole');
 
 async function permissionsRoutes(fastify, options) {
   // Check permission for a user
@@ -33,19 +33,13 @@ async function permissionsRoutes(fastify, options) {
               properties: {
                 id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
                 email: { type: 'string', examples: ['user@example.com'] },
-                tenantRoles: {
+                roles: {
                   type: 'array',
                   items: {
                     type: 'object',
                     properties: {
-                      tenantId: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
-                      role: {
-                        type: 'object',
-                        properties: {
-                          id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
-                          name: { type: 'string', examples: ['admin'] }
-                        }
-                      }
+                      id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+                      name: { type: 'string', examples: ['admin'] }
                     }
                   }
                 }
@@ -78,38 +72,41 @@ async function permissionsRoutes(fastify, options) {
   }, async (request, reply) => {
     const { resource, action, userId, tenantId } = request.body;
     try {
-      // Fetch the user with tenant roles populated
-      const user = await User.findById(userId)
-        .populate({
-          path: 'tenants.role',
-          model: 'Role'
-        });
-
+      // Fetch the user
+      const user = await User.findById(userId);
       if (!user) {
         return reply.code(404).send({ error: 'User not found' });
       }
 
-      // Find the user's role for the specified tenant
-      const tenantRole = user.tenants.find(t => t.tenantId.toString() === tenantId);
-      if (!tenantRole) {
-        return reply.code(404).send({ error: 'User not found in tenant' });
+      // Get all roles for the user in the specified tenant
+      const userRoles = await userTenantRoleService.getUserRolesInTenant(userId, tenantId);
+      if (!userRoles || userRoles.length === 0) {
+        return reply.code(404).send({ error: 'User has no roles in this tenant' });
       }
 
-      // Evaluate permission using OPA
-      const result = await opaService.checkAccess(user, resource, action, tenantId);
+      // Evaluate permission using OPA for each role
+      const roleResults = await Promise.all(
+        userRoles.map(async (userRole) => {
+          const result = await opaService.checkAccess(user, resource, action, tenantId, userRole.roleId);
+          return {
+            role: userRole.roleId,
+            allowed: result
+          };
+        })
+      );
+
+      // User is allowed if any of their roles allow the action
+      const allowed = roleResults.some(result => result.allowed);
 
       // Return detailed response
       return {
-        allowed: !!result,
+        allowed,
         user: {
           id: user._id,
           email: user.email,
-          tenantRoles: user.tenants.map(t => ({
-            tenantId: t.tenantId,
-            role: t.role ? {
-              id: t.role._id,
-              name: t.role.name
-            } : null
+          roles: userRoles.map(ur => ({
+            id: ur.roleId._id,
+            name: ur.roleId.name
           }))
         },
         request: {

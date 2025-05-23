@@ -42,3 +42,4 @@ yarn-error.log*
 # OPA specific
 backend/data/*.json
 !backend/data/schema.json 
+backend/.yarn/install-state.gz

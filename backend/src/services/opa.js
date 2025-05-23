@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { loadPolicy } = require('@open-policy-agent/opa-wasm');
 const axios = require('axios');
+const Role = require('../models/role');
 
 class OPAService {
   constructor() {
@@ -183,25 +184,37 @@ class OPAService {
     }
   }
 
-  async checkAccess(user, resource, action, tenantId) {
-    // Find the user's role for the specified tenant
-    const tenantRole = user.tenants.find(t => t.tenantId.toString() === tenantId);
-    if (!tenantRole || !tenantRole.role) {
-      console.log('No role found for tenant:', { tenantId, userTenants: user.tenants });
+  async checkAccess(user, resource, action, tenantId, roleId) {
+    try {
+      // Get the role details
+      const role = await Role.findById(roleId);
+      if (!role) {
+        console.log('Role not found:', roleId);
+        return false;
+      }
+
+      // Verify role belongs to the tenant
+      if (role.tenantId.toString() !== tenantId.toString()) {
+        console.log('Role does not belong to tenant:', { roleId, tenantId });
+        return false;
+      }
+
+      const input = {
+        user: {
+          role: role.name,
+          resource: resource,
+          action: action,
+          tenantId: tenantId
+        }
+      };
+      console.log('Checking access with input:', JSON.stringify(input, null, 2));
+      console.log('User role:', role.name);
+
+      return this.evaluatePolicy('rbac', input);
+    } catch (error) {
+      console.error('Error checking access:', error);
       return false;
     }
-
-    const input = {
-      user: {
-        role: tenantRole.role.type, // Use role name instead of ID
-        resource: resource,
-        action: action
-      }
-    };
-    console.log('Checking access with input:', JSON.stringify(input, null, 2));
-    console.log('User role type:', tenantRole.role.type);
-
-    return this.evaluatePolicy('rbac', input);
   }
 }
 
