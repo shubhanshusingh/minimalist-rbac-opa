@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Create wasm directory if it doesn't exist
-mkdir -p src/policies/wasm
+mkdir -p ../opa/wasm
 
 # Compile Rego policy to a bundle (tar.gz)
 echo "Compiling policies..."
-opa build --target wasm -e rbac/allow -o src/policies/wasm/rbac_bundle.tar.gz src/policies/rbac.rego
+opa build --target wasm -e rbac/allow -o ../opa/wasm/rbac_bundle.tar.gz ../opa/policies/rbac.rego
 
 # Extract the raw WASM file from the bundle
-tar -xzf src/policies/wasm/rbac_bundle.tar.gz -C src/policies/wasm /policy.wasm
-mv src/policies/wasm/policy.wasm src/policies/wasm/rbac.wasm
+tar -xzf ../opa/wasm/rbac_bundle.tar.gz -C ../opa/wasm /policy.wasm
+mv ../opa/wasm/policy.wasm ../opa/wasm/rbac.wasm
 
 echo "Policies compiled successfully!" 
