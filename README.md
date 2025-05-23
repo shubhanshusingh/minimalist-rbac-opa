@@ -115,6 +115,135 @@ For more installation options and details, visit the [official OPA documentation
    yarn dev
    ```
 
+## Seeding the Database
+
+To quickly populate your database with sample tenants, roles, users, and user-tenant-role assignments, run the following command from the backend directory:
+
+```bash
+node scripts/seed.js
+```
+
+This script will:
+- Create two tenants: Tenant 1 and Tenant 2
+- Create four roles (admin, viewer, developer, editor) for each tenant
+- Create two users: admin@example.com and user@example.com
+- Assign the admin role to admin@example.com in both tenants
+- Assign the viewer role to user@example.com in both tenants
+
+You can safely run this script multiple times; it will not create duplicates.
+
+## API Usage
+
+### Authentication
+
+First, get a JWT token by logging in:
+
+```bash
+curl -X POST http://localhost:3001/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@example.com",
+    "password": "admin123"
+  }'
+```
+
+### Roles
+
+All role-related endpoints require a `tenantId` query parameter:
+
+1. **List Roles for a Tenant**:
+```bash
+curl -X GET 'http://localhost:3001/roles?tenantId=TENANT_ID' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+2. **Create a New Role**:
+```bash
+curl -X POST http://localhost:3001/roles \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -d '{
+    "name": "custom-role",
+    "description": "Custom role description",
+    "tenantId": "TENANT_ID"
+  }'
+```
+
+3. **Get Role by ID**:
+```bash
+curl -X GET http://localhost:3001/roles/ROLE_ID \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+4. **Update Role**:
+```bash
+curl -X PUT http://localhost:3001/roles/ROLE_ID \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -d '{
+    "name": "updated-role",
+    "description": "Updated role description"
+  }'
+```
+
+5. **Delete Role**:
+```bash
+curl -X DELETE http://localhost:3001/roles/ROLE_ID \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+### User-Tenant-Role Assignments
+
+1. **Assign Role to User**:
+```bash
+curl -X POST http://localhost:3001/userTenantRole/assign \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -d '{
+    "userId": "USER_ID",
+    "tenantId": "TENANT_ID",
+    "roleId": "ROLE_ID"
+  }'
+```
+
+2. **Get User's Roles in a Tenant**:
+```bash
+curl -X GET 'http://localhost:3001/userTenantRole/user/USER_ID/tenant/TENANT_ID/roles' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+3. **Remove Role from User**:
+```bash
+curl -X DELETE http://localhost:3001/userTenantRole/remove \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -d '{
+    "userId": "USER_ID",
+    "tenantId": "TENANT_ID",
+    "roleId": "ROLE_ID"
+  }'
+```
+
+4. **Get All Users with a Role in a Tenant**:
+```bash
+curl -X GET 'http://localhost:3001/userTenantRole/tenant/TENANT_ID/role/ROLE_ID/users' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+5. **Get All Tenants a User Belongs To**:
+```bash
+curl -X GET 'http://localhost:3001/userTenantRole/user/USER_ID/tenants' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+6. **Check if User Has a Role**:
+```bash
+curl -X GET 'http://localhost:3001/userTenantRole/check?userId=USER_ID&tenantId=TENANT_ID&roleId=ROLE_ID' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+Note: Replace `TENANT_ID`, `USER_ID`, `ROLE_ID`, and `YOUR_JWT_TOKEN` with actual values from your database.
+
 ## Authentication
 
 The system supports three authentication modes:
@@ -268,27 +397,69 @@ allow if {
 
 ```json
 {
-  "roles": [
-    {
-      "type": "admin",
-      "permissions": [
-        {
-          "resource": "settings",
-          "actions": ["read", "write"]
-        }
-      ]
-    },
-    {
-      "type": "viewer",
-      "permissions": [
-        {
-          "resource": "settings",
-          "actions": ["read"]
-        }
-      ]
-    }
-  ]
-}
+    "roles": [
+      {
+        "type": "admin",
+        "permissions": [
+          {
+            "resource": "profile",
+            "actions": ["read", "write"]
+          },
+          {
+            "resource": "settings",
+            "actions": ["read", "write"]
+          }
+        ]
+      },
+      {
+        "type": "viewer",
+        "permissions": [
+          {
+            "resource": "profile",
+            "actions": ["read"]
+          },
+          {
+            "resource": "settings",
+            "actions": ["read"]
+          }
+        ]
+      },
+      {
+        "type": "developer",
+        "permissions": [
+          {
+            "resource": "profile",
+            "actions": ["read", "write"]
+          },
+          {
+            "resource": "settings",
+            "actions": ["read", "write"]
+          },
+          {
+            "resource": "code",
+            "actions": ["read", "write"]
+          }
+        ]
+      },
+      {
+        "type": "editor",
+        "permissions": [
+          {
+            "resource": "profile",
+            "actions": ["read", "write"]
+          },
+          {
+            "resource": "settings",
+            "actions": ["read", "write"]
+          },
+          {
+            "resource": "content",
+            "actions": ["read", "write"]
+          }
+        ]
+      }
+    ]
+  }
 ```
 
 ## License

@@ -57,13 +57,22 @@ class UserTenantRoleService {
 
   // Get all tenants a user belongs to with their roles
   async getUserTenantsWithRoles(userId) {
-    const userTenantRoles = await UserTenantRole.find({ userId })
-      .populate('tenantId')
-      .populate('roleId');
+    const user = await User.findById(userId)
+      .populate({
+        path: 'userTenantRoles',
+        populate: [
+          { path: 'tenantId' },
+          { path: 'roleId' }
+        ]
+      });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
 
     // Group by tenant
     const tenantMap = new Map();
-    userTenantRoles.forEach(utr => {
+    user.userTenantRoles.forEach(utr => {
       const tenantId = utr.tenantId._id.toString();
       if (!tenantMap.has(tenantId)) {
         tenantMap.set(tenantId, {

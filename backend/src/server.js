@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const fastify = require('fastify')({
   logger: true
 });
+const metrics = require('./services/metrics');
 
 // Connect to MongoDB using Mongoose
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rbac-opa', {
@@ -76,8 +77,53 @@ fastify.register(require('@fastify/swagger'), {
   }
 });
 
+// Redoc documentation
 fastify.register(require('@fastify/swagger-ui'), {
-  routePrefix: '/documentation'
+  routePrefix: '/redoc',
+  uiConfig: {
+    docExpansion: 'full',
+    deepLinking: false
+  },
+  staticCSP: true,
+  uiHooks: {
+    onRequest: function (request, reply, next) { next(); },
+    preHandler: function (request, reply, next) { next(); }
+  },
+  transformStaticCSP: (header) => header,
+  transformSpecification: (swaggerObject, request, reply) => { return swaggerObject },
+  transformSpecificationClone: true,
+  theme: {
+    js: [
+      { filename: 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js', type: 'text/javascript' }
+    ],
+    css: [
+      { filename: 'https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700', type: 'text/css' }
+    ]
+  }
+});
+
+// Add metrics middleware
+fastify.addHook('onRequest', async (request, reply) => {
+  request.startTime = process.hrtime();
+});
+
+fastify.addHook('onResponse', async (request, reply) => {
+  const duration = process.hrtime(request.startTime);
+  const durationInSeconds = duration[0] + duration[1] / 1e9;
+
+  metrics.httpRequestDurationMicroseconds
+    .labels(request.method, request.routeOptions.url, reply.statusCode.toString())
+    .observe(durationInSeconds);
+
+  metrics.httpRequestsTotal
+    .labels(request.method, request.routeOptions.url, reply.statusCode.toString())
+    .inc();
+});
+
+// Add metrics endpoint
+fastify.get('/metrics', async (request, reply) => {
+  reply.header('Content-Type', metrics.register.contentType);
+  return metrics.register.metrics();
 });
 
 // Register routes
