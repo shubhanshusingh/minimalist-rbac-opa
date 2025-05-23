@@ -1,13 +1,16 @@
 const Tenant = require('../models/tenant');
 
 async function tenantRoutes(fastify, options) {
-  // Get all tenants (admin only)
+  // Get all tenants
   fastify.get('/', {
     onRequest: [fastify.authenticate],
     schema: {
-      description: 'Get all tenants (admin only)',
+      description: 'Get all tenants',
       tags: ['tenants'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       response: {
         200: {
           type: 'array',
@@ -48,7 +51,10 @@ async function tenantRoutes(fastify, options) {
     schema: {
       description: 'Get tenant by ID',
       tags: ['tenants'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       params: {
         type: 'object',
         required: ['id'],
@@ -104,7 +110,10 @@ async function tenantRoutes(fastify, options) {
     schema: {
       description: 'Create a new tenant',
       tags: ['tenants'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       body: {
         type: 'object',
         required: ['name', 'domain'],
@@ -168,7 +177,10 @@ async function tenantRoutes(fastify, options) {
     schema: {
       description: 'Update an existing tenant',
       tags: ['tenants'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       params: {
         type: 'object',
         required: ['id'],
@@ -245,7 +257,10 @@ async function tenantRoutes(fastify, options) {
     schema: {
       description: 'Delete a tenant',
       tags: ['tenants'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       params: {
         type: 'object',
         required: ['id'],

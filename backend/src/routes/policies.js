@@ -8,7 +8,10 @@ async function policyRoutes(fastify, options) {
     schema: {
       description: 'Get all policies for the current tenant',
       tags: ['policies'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       response: {
         200: {
           type: 'array',
@@ -42,7 +45,10 @@ async function policyRoutes(fastify, options) {
     schema: {
       description: 'Get policy by ID',
       tags: ['policies'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       params: {
         type: 'object',
         required: ['id'],
@@ -94,7 +100,10 @@ async function policyRoutes(fastify, options) {
     schema: {
       description: 'Create a new policy',
       tags: ['policies'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       body: {
         type: 'object',
         required: ['name', 'rego'],
@@ -165,7 +174,10 @@ async function policyRoutes(fastify, options) {
     schema: {
       description: 'Update an existing policy',
       tags: ['policies'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       params: {
         type: 'object',
         required: ['id'],
@@ -248,7 +260,10 @@ async function policyRoutes(fastify, options) {
     schema: {
       description: 'Delete a policy',
       tags: ['policies'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       params: {
         type: 'object',
         required: ['id'],

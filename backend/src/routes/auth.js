@@ -128,7 +128,10 @@ async function authRoutes(fastify, options) {
     schema: {
       description: 'Get current user profile',
       tags: ['auth'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       response: {
         200: {
           type: 'object',

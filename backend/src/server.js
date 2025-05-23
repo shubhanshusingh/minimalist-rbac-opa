@@ -47,6 +47,30 @@ fastify.register(require('@fastify/swagger'), {
         name: 'Authorization',
         in: 'header',
         description: 'Enter your bearer token in the format **Bearer <token>**'
+      },
+      apiKeyAuth: {
+        type: 'apiKey',
+        name: 'X-API-Key',
+        in: 'header',
+        description: 'Enter your API key'
+      }
+    },
+    security: [
+      { bearerAuth: [] },
+      { apiKeyAuth: [] }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        },
+        apiKeyAuth: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'X-API-Key'
+        }
       }
     }
   }

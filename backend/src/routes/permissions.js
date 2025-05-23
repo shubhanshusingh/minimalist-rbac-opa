@@ -9,7 +9,10 @@ async function permissionsRoutes(fastify, options) {
     schema: {
       description: 'Check if a user has permission to perform an action on a resource',
       tags: ['permissions'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       body: {
         type: 'object',
         required: ['resource', 'action', 'tenantId'],

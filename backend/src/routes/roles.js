@@ -7,7 +7,10 @@ async function roleRoutes(fastify, options) {
     schema: {
       description: 'Get all roles for the current tenant',
       tags: ['roles'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       response: {
         200: {
           type: 'array',
@@ -53,7 +56,10 @@ async function roleRoutes(fastify, options) {
     schema: {
       description: 'Get role by ID',
       tags: ['roles'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       params: {
         type: 'object',
         required: ['id'],
@@ -117,7 +123,10 @@ async function roleRoutes(fastify, options) {
     schema: {
       description: 'Create a new role',
       tags: ['roles'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       body: {
         type: 'object',
         required: ['name', 'permissions'],
@@ -205,7 +214,10 @@ async function roleRoutes(fastify, options) {
     schema: {
       description: 'Update an existing role',
       tags: ['roles'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       params: {
         type: 'object',
         required: ['id'],
@@ -306,7 +318,10 @@ async function roleRoutes(fastify, options) {
     schema: {
       description: 'Delete a role',
       tags: ['roles'],
-      security: [{ bearerAuth: [] }],
+      security: [
+        { bearerAuth: [] },
+        { apiKeyAuth: [] }
+      ],
       params: {
         type: 'object',
         required: ['id'],

@@ -100,6 +100,9 @@ For more installation options and details, visit the [official OPA documentation
    API_KEY=your-api-key-here
    API_KEY_HEADER=X-API-Key
 
+   # Authentication Mode
+   AUTH_MODE=jwt  # Options: 'jwt', 'api-key', or 'both'
+
    # OPA Configuration
    OPA_MODE=wasm  # or 'http'
    OPA_SERVER_URL=http://localhost:8181  # Only needed if OPA_MODE=http
@@ -111,6 +114,27 @@ For more installation options and details, visit the [official OPA documentation
    cd backend
    yarn dev
    ```
+
+## Authentication
+
+The system supports three authentication modes:
+
+1. **JWT Mode** (`AUTH_MODE=jwt`):
+   - Uses JWT tokens for authentication
+   - Tokens are obtained through the `/auth/login` endpoint
+   - Include token in requests using the `Authorization: Bearer <token>` header
+
+2. **API Key Mode** (`AUTH_MODE=api-key`):
+   - Uses API keys for authentication
+   - Configure API key in `.env` file
+   - Include API key in requests using the `X-API-Key` header
+
+3. **Both Modes** (`AUTH_MODE=both`):
+   - Supports both JWT and API key authentication
+   - Tries JWT first, falls back to API key if JWT fails
+   - Useful for transitioning between authentication methods
+
+To switch between modes, update the `AUTH_MODE` environment variable in your `.env` file.
 
 ## OPA Integration
 
