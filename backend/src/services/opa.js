@@ -6,6 +6,70 @@ class OPAService {
   constructor() {
     this.policies = new Map();
     this.wasmDir = path.join(__dirname, '../policies/wasm');
+    this.data = {
+      "roles": [
+        {
+          "type": "admin",
+          "permissions": [
+            {
+              "resource": "profile",
+              "actions": ["read", "write"]
+            },
+            {
+              "resource": "settings",
+              "actions": ["read", "write"]
+            }
+          ]
+        },
+        {
+          "type": "viewer",
+          "permissions": [
+            {
+              "resource": "profile",
+              "actions": ["read"]
+            },
+            {
+              "resource": "settings",
+              "actions": ["read"]
+            }
+          ]
+        },
+        {
+          "type": "developer",
+          "permissions": [
+            {
+              "resource": "profile",
+              "actions": ["read", "write"]
+            },
+            {
+              "resource": "settings",
+              "actions": ["read", "write"]
+            },
+            {
+              "resource": "code",
+              "actions": ["read", "write"]
+            }
+          ]
+        },
+        {
+          "type": "editor",
+          "permissions": [
+            {
+              "resource": "profile",
+              "actions": ["read", "write"]
+            },
+            {
+              "resource": "settings",
+              "actions": ["read", "write"]
+            },
+            {
+              "resource": "content",
+              "actions": ["read", "write"]
+            }
+          ]
+        }
+      ]
+    };
   }
 
   async initialize() {
@@ -24,10 +88,11 @@ class OPAService {
             console.log(`Successfully loaded policy: ${moduleName}`);
           } catch (loadError) {
             console.error(`Error loading policy ${moduleName}:`, loadError);
+          } finally {
+            console.log('OPA WASM modules initialized successfully');
           }
         }
       }
-      console.log('OPA WASM modules initialized successfully');
     } catch (error) {
       console.error('Error initializing OPA WASM modules:', error);
       throw error;
@@ -40,8 +105,8 @@ class OPAService {
       if (!policy) {
         throw new Error(`Policy ${policyName} not found`);
       }
-      const result = await policy.evaluate(input);
-      return result;
+      const result = await policy.evaluate({ input, data: this.data });
+      return result[0]?.result || false;
     } catch (error) {
       console.error('Error evaluating policy:', error);
       throw error;
@@ -70,11 +135,10 @@ class OPAService {
     const input = {
       user: {
         id: user._id.toString(),
-        role: tenantRole.role._id.toString(),
-        tenantId: tenantId
-      },
-      resource,
-      action
+        role: tenantRole.role.name, // Use role name instead of ID
+        resource: resource,
+        action: action
+      }
     };
 
     return this.evaluatePolicy('rbac', input);
