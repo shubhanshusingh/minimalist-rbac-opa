@@ -1,0 +1,39 @@
+{
+  "name": "rbac-opa-backend",
+  "version": "1.0.0",
+  "description": "Backend for RBAC with OPA integration",
+  "main": "src/server.js",
+  "packageManager": "yarn@4.9.1",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "yarn nodemon src/server.js",
+    "test": "yarn jest",
+    "clean": "yarn cache clean",
+    "build": "yarn install && yarn build:wasm",
+    "build:wasm": "node scripts/build-wasm.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cors": "^8.4.1",
+    "@fastify/jwt": "^7.2.1",
+    "@fastify/mongodb": "^8.0.0",
+    "@fastify/swagger": "^8.12.1",
+    "@fastify/swagger-ui": "^1.10.1",
+    "@open-policy-agent/opa-wasm": "^1.0.0",
+    "axios": "^1.6.2",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.24.3",
+    "mongoose": "^8.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=4.0.0"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "roles": [
+    {
+      "id": "admin",
+      "permissions": [
+        {
+          "resource": "*",
+          "actions": ["*"]
+        }
+      ]
+    },
+    {
+      "id": "viewer",
+      "permissions": [
+        {
+          "resource": "iam",
+          "actions": ["read"]
+        },
+        {
+          "resource": "settings",
+          "actions": ["read"]
+        },
+        {
+          "resource": "analytics",
+          "actions": ["read"]
+        },
+        {
+          "resource": "documents",
+          "actions": ["read"]
+        }
+      ]
+    },
+    {
+      "id": "developer",
+      "permissions": [
+        {
+          "resource": "iam",
+          "actions": ["read", "write"]
+        },
+        {
+          "resource": "settings",
+          "actions": ["read", "write"]
+        },
+        {
+          "resource": "documents",
+          "actions": ["read", "write"]
+        },
+        {
+          "resource": "analytics",
+          "actions": ["read"]
+        }
+      ]
+    },
+    {
+      "id": "editor",
+      "permissions": [
+        {
+          "resource": "iam",
+          "actions": ["read", "write"]
+        },
+        {
+          "resource": "settings",
+          "actions": ["read", "write"]
+        },
+        {
+          "resource": "documents",
+          "actions": ["read", "write"]
+        },
+        {
+          "resource": "analytics",
+          "actions": ["read"]
+        }
+      ]
+    }
+  ]
+} 
