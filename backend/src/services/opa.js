@@ -60,12 +60,18 @@ class OPAService {
     }
   }
 
-  async checkAccess(user, resource, action) {
+  async checkAccess(user, resource, action, tenantId) {
+    // Find the user's role for the specified tenant
+    const tenantRole = user.tenants.find(t => t.tenantId.toString() === tenantId);
+    if (!tenantRole || !tenantRole.role) {
+      return false;
+    }
+
     const input = {
       user: {
         id: user._id.toString(),
-        roles: user.roles.map(role => role.toString()),
-        tenantId: user.tenantId.toString()
+        role: tenantRole.role._id.toString(),
+        tenantId: tenantId
       },
       resource,
       action

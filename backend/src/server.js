@@ -1,16 +1,28 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
 const fastify = require('fastify')({
   logger: true
+});
+
+// Connect to MongoDB using Mongoose
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/rbac-opa', {
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+  connectTimeoutMS: 10000
+});
+
+mongoose.connection.on('connected', () => {
+  fastify.log.info('Mongoose connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+  fastify.log.error('Mongoose connection error:', err);
 });
 
 // Register plugins
 fastify.register(require('@fastify/cors'), {
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true
-});
-
-fastify.register(require('@fastify/mongodb'), {
-  url: process.env.MONGODB_URI || 'mongodb://localhost:27017/rbac-opa',
-  forceClose: true
 });
 
 fastify.register(require('@fastify/jwt'), {
@@ -28,6 +40,14 @@ fastify.register(require('@fastify/swagger'), {
       title: 'RBAC OPA API',
       description: 'API documentation for RBAC with OPA',
       version: '1.0.0'
+    },
+    securityDefinitions: {
+      bearerAuth: {
+        type: 'apiKey',
+        name: 'Authorization',
+        in: 'header',
+        description: 'Enter your bearer token in the format **Bearer <token>**'
+      }
     }
   }
 });

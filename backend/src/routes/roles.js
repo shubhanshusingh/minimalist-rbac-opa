@@ -15,7 +15,7 @@ async function roleRoutes(fastify, options) {
             type: 'object',
             properties: {
               _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
-              name: { type: 'string', examples: ['admin'] },
+              type: { type: 'string', examples: ['admin'] },
               description: { type: 'string', examples: ['Administrator role'] },
               permissions: {
                 type: 'array',

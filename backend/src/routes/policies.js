@@ -54,18 +54,18 @@ async function policyRoutes(fastify, options) {
         200: {
           type: 'object',
           properties: {
-            _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
-            name: { type: 'string', example: 'content-access' },
-            description: { type: 'string', example: 'Content access policy' },
-            rego: { type: 'string', example: 'package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' },
-            version: { type: 'number', example: 1 },
-            tenantId: { type: 'string', example: '507f1f77bcf86cd799439011' }
+            _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+            name: { type: 'string', examples: ['content-access'] },
+            description: { type: 'string', examples: ['Content access policy'] },
+            rego: { type: 'string', examples: ['package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' ] },
+            version: { type: 'number', examples: [1] },
+            tenantId: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
           }
         },
         404: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Policy not found' }
+            error: { type: 'string', examples: ['Policy not found'] }
           }
         }
       }
@@ -99,27 +99,27 @@ async function policyRoutes(fastify, options) {
         type: 'object',
         required: ['name', 'rego'],
         properties: {
-          name: { type: 'string', example: 'content-access' },
-          description: { type: 'string', example: 'Content access policy' },
-          rego: { type: 'string', example: 'package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' }
+          name: { type: 'string', examples: ['content-access'] },
+          description: { type: 'string', examples: ['Content access policy'] },
+          rego: { type: 'string', examples: ['package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' ] }
         }
       },
       response: {
         200: {
           type: 'object',
           properties: {
-            _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
-            name: { type: 'string', example: 'content-access' },
-            description: { type: 'string', example: 'Content access policy' },
-            rego: { type: 'string', example: 'package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' },
-            version: { type: 'number', example: 1 },
-            tenantId: { type: 'string', example: '507f1f77bcf86cd799439011' }
+            _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+            name: { type: 'string', examples: ['content-access'] },
+            description: { type: 'string', examples: ['Content access policy'] },
+            rego: { type: 'string', examples: ['package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' ] },
+            version: { type: 'number', examples: [1] },
+            tenantId: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
           }
         },
         400: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Policy with this name already exists' }
+            error: { type: 'string', examples: ['Policy with this name already exists'] }
           }
         }
       }
@@ -170,39 +170,39 @@ async function policyRoutes(fastify, options) {
         type: 'object',
         required: ['id'],
         properties: {
-          id: { type: 'string', example: '507f1f77bcf86cd799439011' }
+          id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
         }
       },
       body: {
         type: 'object',
         properties: {
-          name: { type: 'string', example: 'content-access' },
-          description: { type: 'string', example: 'Content access policy' },
-          rego: { type: 'string', example: 'package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' }
+          name: { type: 'string', examples: ['content-access'] },
+          description: { type: 'string', examples: ['Content access policy'] },
+          rego: { type: 'string', examples: ['package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' ] }
         }
       },
       response: {
         200: {
           type: 'object',
           properties: {
-            _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
-            name: { type: 'string', example: 'content-access' },
-            description: { type: 'string', example: 'Content access policy' },
-            rego: { type: 'string', example: 'package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' },
-            version: { type: 'number', example: 2 },
-            tenantId: { type: 'string', example: '507f1f77bcf86cd799439011' }
+            _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+            name: { type: 'string', examples: ['content-access'] },
+            description: { type: 'string', examples: ['Content access policy'] },
+            rego: { type: 'string', examples: ['package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' ] },
+            version: { type: 'number', examples: [2] },
+            tenantId: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
           }
         },
         400: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Invalid Rego policy: syntax error' }
+            error: { type: 'string', examples: ['Invalid Rego policy: syntax error'] }
           }
         },
         404: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Policy not found' }
+            error: { type: 'string', examples: ['Policy not found'] }
           }
         }
       }
@@ -253,27 +253,27 @@ async function policyRoutes(fastify, options) {
         type: 'object',
         required: ['id'],
         properties: {
-          id: { type: 'string', example: '507f1f77bcf86cd799439011' }
+          id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
         }
       },
       response: {
         200: {
           type: 'object',
           properties: {
-            message: { type: 'string', example: 'Policy deleted successfully' }
+            message: { type: 'string', examples: ['Policy deleted successfully'] }
           }
         },
         404: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Policy not found' }
+            error: { type: 'string', examples: ['Policy not found'] }
           }
         }
       }
     }
   }, async (request, reply) => {
     try {
-      const policy = await Policy.findOne({
+      const policy = await Policy.findOneAndDelete({
         _id: request.params.id,
         tenantId: request.user.tenantId
       });
@@ -282,7 +282,6 @@ async function policyRoutes(fastify, options) {
         return reply.code(404).send({ error: 'Policy not found' });
       }
 
-      await policy.deleteOne();
       return { message: 'Policy deleted successfully' };
     } catch (error) {
       fastify.log.error(error);
@@ -290,74 +289,6 @@ async function policyRoutes(fastify, options) {
     }
   });
 
-  // Evaluate policy
-  fastify.post('/:id/evaluate', {
-    onRequest: [fastify.authenticate],
-    schema: {
-      description: 'Evaluate a policy with input data',
-      tags: ['policies'],
-      security: [{ bearerAuth: [] }],
-      params: {
-        type: 'object',
-        required: ['id'],
-        properties: {
-          id: { type: 'string', example: '507f1f77bcf86cd799439011' }
-        }
-      },
-      body: {
-        type: 'object',
-        required: ['input'],
-        properties: {
-          input: {
-            type: 'object',
-            properties: {
-              action: { type: 'string', example: 'read' },
-              user: {
-                type: 'object',
-                properties: {
-                  roles: {
-                    type: 'array',
-                    items: { type: 'string', example: 'editor' }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      response: {
-        200: {
-          type: 'object',
-          properties: {
-            result: { type: 'boolean', example: true }
-          }
-        },
-        404: {
-          type: 'object',
-          properties: {
-            error: { type: 'string', example: 'Policy not found' }
-          }
-        }
-      }
-    }
-  }, async (request, reply) => {
-    try {
-      const policy = await Policy.findOne({
-        _id: request.params.id,
-        tenantId: request.user.tenantId
-      });
-
-      if (!policy) {
-        return reply.code(404).send({ error: 'Policy not found' });
-      }
-
-      const result = await opaService.evaluatePolicy(policy.name, request.body);
-      return result;
-    } catch (error) {
-      fastify.log.error(error);
-      return reply.code(500).send({ error: 'Internal server error' });
-    }
-  });
 }
 
 module.exports = policyRoutes; 

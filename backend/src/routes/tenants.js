@@ -14,16 +14,16 @@ async function tenantRoutes(fastify, options) {
           items: {
             type: 'object',
             properties: {
-              _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
-              name: { type: 'string', example: 'Acme Corp' },
-              domain: { type: 'string', example: 'acme.com' },
+              _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+              name: { type: 'string', examples: ['Acme Corp'] },
+              domain: { type: 'string', examples: ['acme.com'] },
               settings: {
                 type: 'object',
                 properties: {
-                  theme: { type: 'string', example: 'light' },
+                  theme: { type: 'string', examples: ['light'] },
                   features: {
                     type: 'array',
-                    items: { type: 'string', example: 'advanced-analytics' }
+                    items: { type: 'string', examples: ['advanced-analytics'] }
                   }
                 }
               }
@@ -53,23 +53,23 @@ async function tenantRoutes(fastify, options) {
         type: 'object',
         required: ['id'],
         properties: {
-          id: { type: 'string', example: '507f1f77bcf86cd799439011' }
+          id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
         }
       },
       response: {
         200: {
           type: 'object',
           properties: {
-            _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
-            name: { type: 'string', example: 'Acme Corp' },
-            domain: { type: 'string', example: 'acme.com' },
+            _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+            name: { type: 'string', examples: ['Acme Corp'] },
+            domain: { type: 'string', examples: ['acme.com'] },
             settings: {
               type: 'object',
               properties: {
-                theme: { type: 'string', example: 'light' },
+                theme: { type: 'string', examples: ['light'] },
                 features: {
                   type: 'array',
-                  items: { type: 'string', example: 'advanced-analytics' }
+                  items: { type: 'string', examples: ['advanced-analytics'] }
                 }
               }
             }
@@ -78,7 +78,7 @@ async function tenantRoutes(fastify, options) {
         404: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Tenant not found' }
+            error: { type: 'string', examples: ['Tenant not found'] }
           }
         }
       }
@@ -109,24 +109,24 @@ async function tenantRoutes(fastify, options) {
         type: 'object',
         required: ['name', 'domain'],
         properties: {
-          name: { type: 'string', example: 'Acme Corp' },
-          domain: { type: 'string', example: 'acme.com' }
+          name: { type: 'string', examples: ['Acme Corp'] },
+          domain: { type: 'string', examples: ['acme.com'] }
         }
       },
       response: {
         200: {
           type: 'object',
           properties: {
-            _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
-            name: { type: 'string', example: 'Acme Corp' },
-            domain: { type: 'string', example: 'acme.com' },
+            _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+            name: { type: 'string', examples: ['Acme Corp'] },
+            domain: { type: 'string', examples: ['acme.com'] },
             settings: {
               type: 'object',
               properties: {
-                theme: { type: 'string', example: 'light' },
+                theme: { type: 'string', examples: ['light'] },
                 features: {
                   type: 'array',
-                  items: { type: 'string', example: 'advanced-analytics' }
+                  items: { type: 'string', examples: ['advanced-analytics'] }
                 }
               }
             }
@@ -135,7 +135,7 @@ async function tenantRoutes(fastify, options) {
         400: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Tenant with this domain already exists' }
+            error: { type: 'string', examples: ['Tenant with this domain already exists'] }
           }
         }
       }
@@ -173,20 +173,20 @@ async function tenantRoutes(fastify, options) {
         type: 'object',
         required: ['id'],
         properties: {
-          id: { type: 'string', example: '507f1f77bcf86cd799439011' }
+          id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
         }
       },
       body: {
         type: 'object',
         properties: {
-          name: { type: 'string', example: 'Acme Corp' },
+          name: { type: 'string', examples: ['Acme Corp'] },
           settings: {
             type: 'object',
             properties: {
-              theme: { type: 'string', example: 'dark' },
+              theme: { type: 'string', examples: ['dark'] },
               features: {
                 type: 'array',
-                items: { type: 'string', example: 'advanced-analytics' }
+                items: { type: 'string', examples: ['advanced-analytics'] }
               }
             }
           }
@@ -196,16 +196,16 @@ async function tenantRoutes(fastify, options) {
         200: {
           type: 'object',
           properties: {
-            _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
-            name: { type: 'string', example: 'Acme Corp' },
-            domain: { type: 'string', example: 'acme.com' },
+            _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+            name: { type: 'string', examples: ['Acme Corp'] },
+            domain: { type: 'string', examples: ['acme.com'] },
             settings: {
               type: 'object',
               properties: {
-                theme: { type: 'string', example: 'dark' },
+                theme: { type: 'string', examples: ['dark'] },
                 features: {
                   type: 'array',
-                  items: { type: 'string', example: 'advanced-analytics' }
+                  items: { type: 'string', examples: ['advanced-analytics'] }
                 }
               }
             }
@@ -214,7 +214,7 @@ async function tenantRoutes(fastify, options) {
         404: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Tenant not found' }
+            error: { type: 'string', examples: ['Tenant not found'] }
           }
         }
       }
@@ -250,32 +250,32 @@ async function tenantRoutes(fastify, options) {
         type: 'object',
         required: ['id'],
         properties: {
-          id: { type: 'string', example: '507f1f77bcf86cd799439011' }
+          id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
         }
       },
       response: {
         200: {
           type: 'object',
           properties: {
-            message: { type: 'string', example: 'Tenant deleted successfully' }
+            message: { type: 'string', examples: ['Tenant deleted successfully'] }
           }
         },
         404: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Tenant not found' }
+            error: { type: 'string', examples: ['Tenant not found'] }
           }
         }
       }
     }
   }, async (request, reply) => {
     try {
-      const tenant = await Tenant.findById(request.params.id);
+      const tenant = await Tenant.findByIdAndDelete(request.params.id);
+      
       if (!tenant) {
         return reply.code(404).send({ error: 'Tenant not found' });
       }
 
-      await tenant.deleteOne();
       return { message: 'Tenant deleted successfully' };
     } catch (error) {
       fastify.log.error(error);

@@ -1,40 +1,36 @@
 {
   "roles": [
     {
-      "id": "admin",
+      "type": "admin",
       "permissions": [
         {
-          "resource": "*",
-          "actions": ["*"]
+          "resource": "profile",
+          "actions": ["read", "write"]
+        },
+        {
+          "resource": "settings",
+          "actions": ["read", "write"]
         }
       ]
     },
     {
-      "id": "viewer",
+      "type": "viewer",
       "permissions": [
         {
-          "resource": "iam",
+          "resource": "profile",
           "actions": ["read"]
         },
         {
           "resource": "settings",
           "actions": ["read"]
-        },
-        {
-          "resource": "analytics",
-          "actions": ["read"]
-        },
-        {
-          "resource": "documents",
-          "actions": ["read"]
         }
       ]
     },
     {
-      "id": "developer",
+      "type": "developer",
       "permissions": [
         {
-          "resource": "iam",
+          "resource": "profile",
           "actions": ["read", "write"]
         },
         {
@@ -42,20 +38,16 @@
           "actions": ["read", "write"]
         },
         {
-          "resource": "documents",
+          "resource": "code",
           "actions": ["read", "write"]
-        },
-        {
-          "resource": "analytics",
-          "actions": ["read"]
         }
       ]
     },
     {
-      "id": "editor",
+      "type": "editor",
       "permissions": [
         {
-          "resource": "iam",
+          "resource": "profile",
           "actions": ["read", "write"]
         },
         {
@@ -63,12 +55,8 @@
           "actions": ["read", "write"]
         },
         {
-          "resource": "documents",
+          "resource": "content",
           "actions": ["read", "write"]
-        },
-        {
-          "resource": "analytics",
-          "actions": ["read"]
         }
       ]
     }
