@@ -140,14 +140,25 @@ async function authRoutes(fastify, options) {
             email: { type: 'string', format: 'email', examples: ['user@example.com'] },
             firstName: { type: 'string', examples: ['John'] },
             lastName: { type: 'string', examples: ['Doe'] },
-            tenantId: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
-            roles: {
+            tenants: {
               type: 'array',
               items: {
                 type: 'object',
                 properties: {
-                  _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
-                  name: { type: 'string', examples: ['admin'] }
+                  tenantId: {
+                    type: 'object',
+                    properties: {
+                      _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+                      name: { type: 'string', examples: ['Acme Corp'] }
+                    }
+                  },
+                  role: {
+                    type: 'object',
+                    properties: {
+                      _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+                      type: { type: 'string', examples: ['admin'] }
+                    }
+                  }
                 }
               }
             }
@@ -165,7 +176,10 @@ async function authRoutes(fastify, options) {
     try {
       const user = await User.findById(request.user.id)
         .select('-password')
-        .populate('roles');
+        .populate([
+          { path: 'tenants.role', model: 'Role', select: 'type' },
+          { path: 'tenants.tenantId', model: 'Tenant', select: 'name' }
+        ]);
       return user;
     } catch (error) {
       fastify.log.error(error);
