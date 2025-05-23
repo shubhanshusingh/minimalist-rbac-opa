@@ -8,7 +8,7 @@ allow if {
 	input.user.role
 	input.user.resource
 	input.user.action
-	
+
 	# Check if the user's role has the required permission
 	some role in data.roles
 	role.type == input.user.role

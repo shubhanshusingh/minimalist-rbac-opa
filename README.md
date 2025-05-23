@@ -26,7 +26,44 @@ A modern Role-Based Access Control (RBAC) system built with Fastify, Open Policy
 - Node.js >= 18
 - Yarn >= 4.0.0
 - MongoDB >= 6.0
-- Open Policy Agent (OPA)
+- Open Policy Agent (OPA) >= 1.4.2
+
+### Installing OPA
+
+#### macOS
+```bash
+# Using Homebrew
+brew install opa
+
+# Verify installation
+opa version
+```
+
+#### Linux
+```bash
+# Download the latest release
+curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/v1.4.2/opa_linux_amd64
+
+# Make it executable
+chmod +x opa
+
+# Move to a directory in your PATH
+sudo mv opa /usr/local/bin/
+
+# Verify installation
+opa version
+```
+
+#### Windows
+```powershell
+# Using Chocolatey
+choco install opa
+
+# Verify installation
+opa version
+```
+
+For more installation options and details, visit the [official OPA documentation](https://www.openpolicyagent.org/docs/latest/#running-opa).
 
 ## Getting Started
 
