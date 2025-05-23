@@ -7,9 +7,9 @@ A modern Role-Based Access Control (RBAC) system built with Fastify, Open Policy
 ```
 .
 ├── backend/          # Fastify backend server
-└── opa/             # OPA policies and configurations
-    ├── policies/    # Rego policy files
-    └── wasm/       # Compiled WASM files
+└── opa/             # OPA policies and configurations [needed in WASM mode, in http mode this is of no use]
+    ├── policies/    # Rego policy files 
+    └── wasm/        # Compiled WASM files
 ```
 
 ## Features
