@@ -8,7 +8,7 @@ class OPAService {
   constructor() {
     this.policies = new Map();
     this.wasmDir = path.join(__dirname, '../../../opa/wasm');
-    this.mode = process.env.OPA_MODE || 'wasm'; // 'wasm' or 'http'
+    this.mode = process.env.OPA_MODE || 'http'; // Changed default to 'http'
     this.opaServerUrl = process.env.OPA_SERVER_URL || 'http://localhost:8181';
     this.data = {
       "roles": [
@@ -98,6 +98,7 @@ class OPAService {
           console.log(`WASM file size: ${policyWasm.length} bytes`);
           try {
             const policy = await loadPolicy(policyWasm);
+            await policy.setData(this.data);
             this.policies.set(moduleName, policy);
             console.log(`Successfully loaded policy: ${moduleName}`);
           } catch (loadError) {
@@ -114,18 +115,41 @@ class OPAService {
 
   async initializeHttp() {
     try {
-      // Upload policy to OPA server
-      const policyPath = path.join(__dirname, '../../../opa/policies/rbac.rego');
-      const policyContent = fs.readFileSync(policyPath, 'utf8');
+      const policiesDir = path.join(__dirname, '../../../opa/policies');
       
-      await axios.put(`${this.opaServerUrl}/v1/policies/rbac`, policyContent, {
-        headers: { 'Content-Type': 'text/plain' }
-      });
-      console.log('Policy uploaded to OPA server successfully');
+      // Get all .rego files from the policies directory
+      const policyFiles = fs.readdirSync(policiesDir)
+        .filter(file => file.endsWith('.rego'));
 
-      // Upload data to OPA server
-      await axios.put(`${this.opaServerUrl}/v1/data`, this.data);
-      console.log('Data uploaded to OPA server successfully');
+      // Upload each policy to OPA server
+      for (const policyFile of policyFiles) {
+        const policyName = path.basename(policyFile, '.rego');
+        const policyPath = path.join(policiesDir, policyFile);
+        const policyContent = fs.readFileSync(policyPath, 'utf8');
+        
+        try {
+          await axios.put(`${this.opaServerUrl}/v1/policies/${policyName}`, policyContent, {
+            headers: { 'Content-Type': 'text/plain' }
+          });
+          console.log(`Policy ${policyName} uploaded to OPA server successfully`);
+        } catch (error) {
+          console.error(`Error uploading policy ${policyName}:`, error.message);
+          throw error;
+        }
+      }
+
+      // Load and upload data from data.json
+      const dataPath = path.join(policiesDir, 'data.json');
+      if (!fs.existsSync(dataPath)) {
+        console.warn('data.json not found in policies directory, using default data');
+        // Keep using this.data as fallback
+        await axios.put(`${this.opaServerUrl}/v1/data`, this.data);
+      } else {
+        const dataContent = fs.readFileSync(dataPath, 'utf8');
+        const policyData = JSON.parse(dataContent);
+        await axios.put(`${this.opaServerUrl}/v1/data`, policyData);
+        console.log('Data from data.json uploaded to OPA server successfully');
+      }
     } catch (error) {
       console.error('Error initializing OPA HTTP mode:', error);
       throw error;
