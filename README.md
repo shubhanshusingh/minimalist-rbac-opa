@@ -97,8 +97,8 @@ cd backend
 In HTTP mode, policies are evaluated by a separate OPA server.
 
 ```bash
-# Start OPA server
-opa run --server --addr :8181
+# Start OPA server with verbose logging
+opa run --server --addr :8181 --log-level debug
 
 # Set OPA mode to HTTP
 export OPA_MODE=http
