@@ -1,5 +1,6 @@
 const opaService = require('../services/opa');
 const User = require('../models/user');
+const { evaluatePolicy } = require('../utils/rego');
 
 async function permissionsRoutes(fastify, options) {
   // Check permission for a user
@@ -13,27 +14,27 @@ async function permissionsRoutes(fastify, options) {
         type: 'object',
         required: ['resource', 'action'],
         properties: {
-          resource: { type: 'string', example: 'profile' },
-          action: { type: 'string', example: 'read' }
+          resource: { type: 'string', examples: ['users'] },
+          action: { type: 'string', examples: ['read'] }
         }
       },
       response: {
         200: {
           type: 'object',
           properties: {
-            allow: { type: 'boolean', example: true }
+            allowed: { type: 'boolean', examples: [true] }
           }
         },
         404: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'User not found' }
+            error: { type: 'string', examples: ['User not found'] }
           }
         },
         500: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Internal server error' }
+            error: { type: 'string', examples: ['Failed to evaluate policy'] }
           }
         }
       }

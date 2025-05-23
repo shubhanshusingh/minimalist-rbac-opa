@@ -15,12 +15,12 @@ async function policyRoutes(fastify, options) {
           items: {
             type: 'object',
             properties: {
-              _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
-              name: { type: 'string', example: 'content-access' },
-              description: { type: 'string', example: 'Content access policy' },
-              rego: { type: 'string', example: 'package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' },
-              version: { type: 'number', example: 1 },
-              tenantId: { type: 'string', example: '507f1f77bcf86cd799439011' }
+              _id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] },
+              name: { type: 'string', examples: ['content-access'] },
+              description: { type: 'string', examples: ['Content access policy'] },
+              rego: { type: 'string', examples: ['package content\n\ndefault allow = false\n\nallow {\n    input.action == "read"\n    input.user.roles[_] == "editor"\n}' ] },
+              version: { type: 'number', examples: [1] },
+              tenantId: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
             }
           }
         }
@@ -47,7 +47,7 @@ async function policyRoutes(fastify, options) {
         type: 'object',
         required: ['id'],
         properties: {
-          id: { type: 'string', example: '507f1f77bcf86cd799439011' }
+          id: { type: 'string', examples: ['507f1f77bcf86cd799439011'] }
         }
       },
       response: {
