@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=rbac-db
+
+  opa:
+    image: openpolicyagent/opa:1.4.2
+    ports:
+      - "8181:8181"
+    volumes:
+      - ./opa/policies:/policies
+    command: run --server --addr :8181 --log-level debug /policies
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8181/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - HOST=0.0.0.0
+      - MONGODB_URI=mongodb://mongodb:27017/rbac-db
+      - JWT_SECRET=your-jwt-secret-key
+      - JWT_EXPIRES_IN=1d
+      - API_KEY=your-api-key-here
+      - API_KEY_HEADER=X-API-Key
+      - AUTH_MODE=both
+      - OPA_MODE=http
+      - OPA_SERVER_URL=http://opa:8181
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      mongodb:
+        condition: service_started
+      opa:
+        condition: service_healthy
+
+volumes:
+  mongodb_data: 

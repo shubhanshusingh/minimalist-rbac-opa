@@ -67,6 +67,8 @@ For more installation options and details, visit the [official OPA documentation
 
 ## Getting Started
 
+### Option 1: Local Development
+
 1. Clone the repository
 2. Install dependencies:
    ```bash
@@ -114,6 +116,53 @@ For more installation options and details, visit the [official OPA documentation
    cd backend
    yarn dev
    ```
+
+### Option 2: Docker Deployment
+
+1. Clone the repository
+
+2. Build and start the services:
+   ```bash
+   docker-compose up --build
+   ```
+
+   This will start:
+   - MongoDB on port 27017
+   - OPA server on port 8181
+   - Backend service on port 3001
+
+3. To run in detached mode:
+   ```bash
+   docker-compose up -d
+   ```
+
+4. To stop the services:
+   ```bash
+   docker-compose down
+   ```
+
+5. To view logs:
+   ```bash
+   docker-compose logs -f
+   ```
+
+6. To rebuild and restart a specific service:
+   ```bash
+   docker-compose up -d --build backend
+   ```
+
+The Docker setup includes:
+- MongoDB 6.0 with persistent volume
+- OPA 1.4.2 with policy files mounted
+- Backend service with hot-reloading for development
+- Health checks for OPA service
+- Proper service dependencies and startup order
+
+Note: For production deployment, make sure to:
+1. Change the default secrets in docker-compose.yml
+2. Use proper volume management
+3. Configure proper networking and security
+4. Set appropriate resource limits
 
 ## Seeding the Database
 
