@@ -18,10 +18,12 @@ services:
       - ./opa/policies:/policies
     command: run --server --addr :8181 --log-level debug /policies
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8181/health"]
-      interval: 5s
-      timeout: 5s
+      test: ["CMD", "curl", "-f", "http://localhost:8181/health"]
+      interval: 10s
+      timeout: 10s
       retries: 5
+      start_period: 30s
+    restart: unless-stopped
 
   backend:
     build:
@@ -49,6 +51,7 @@ services:
         condition: service_started
       opa:
         condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   mongodb_data: 

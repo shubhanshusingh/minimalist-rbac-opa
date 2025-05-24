@@ -123,7 +123,7 @@ For more installation options and details, visit the [official OPA documentation
 
 2. Build and start the services:
    ```bash
-   docker-compose up --build
+   docker compose up --build
    ```
 
    This will start:
@@ -133,22 +133,22 @@ For more installation options and details, visit the [official OPA documentation
 
 3. To run in detached mode:
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 4. To stop the services:
    ```bash
-   docker-compose down
+   docker compose down
    ```
 
 5. To view logs:
    ```bash
-   docker-compose logs -f
+   docker compose logs -f
    ```
 
 6. To rebuild and restart a specific service:
    ```bash
-   docker-compose up -d --build backend
+   docker compose up -d --build backend
    ```
 
 The Docker setup includes:
