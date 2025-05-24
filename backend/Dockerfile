@@ -16,14 +16,11 @@ COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn ./.yarn
 RUN yarn install
 
-# Create OPA directories
-RUN mkdir -p /opa/policies /opa/wasm
-
-# Copy OPA policies and data
-COPY opa/policies /opa/policies/
-
-# Copy app source
+# Copy app source and OPA policies
 COPY . .
+
+# Create OPA directories if they don't exist
+RUN mkdir -p opa/policies
 
 # Compile policies to WASM if needed
 RUN if [ "$OPA_MODE" = "wasm" ]; then \
@@ -32,6 +29,12 @@ RUN if [ "$OPA_MODE" = "wasm" ]; then \
 
 # Expose port
 EXPOSE 3001
+
+# Set environment variables
+ENV OPA_MODE=http
+ENV OPA_HOST=host.docker.internal
+ENV MONGODB_URI=mongodb://host.docker.internal:27017/rbac-db
+ENV NODE_ENV=production
 
 # Start the app
 CMD ["yarn", "start"] 

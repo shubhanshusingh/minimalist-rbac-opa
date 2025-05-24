@@ -9,7 +9,11 @@ class OPAService {
     this.policies = new Map();
     this.wasmDir = path.join(__dirname, '../../../opa/wasm');
     this.mode = process.env.OPA_MODE || 'http'; // Changed default to 'http'
-    this.opaServerUrl = process.env.OPA_SERVER_URL || 'http://localhost:8181';
+    // Use OPA_HOST environment variable or default to localhost
+    const opaHost = process.env.OPA_HOST || 'localhost';
+    this.opaServerUrl = `http://${opaHost}:8181`;
+    console.log('OPA Server URL:', this.opaServerUrl);
+    
     this.data = {
       "roles": [
         {
@@ -117,8 +121,19 @@ class OPAService {
     try {
       // Load and upload policies from the opa/policies directory
       const policiesDir = path.join(__dirname, '../../opa/policies');
+      console.log('Looking for policies in:', policiesDir);
+      
+      if (!fs.existsSync(policiesDir)) {
+        console.error(`Policies directory not found at: ${policiesDir}`);
+        throw new Error(`Policies directory not found at: ${policiesDir}`);
+      }
+
       const policyFiles = fs.readdirSync(policiesDir)
         .filter(file => file.endsWith('.rego'));
+
+      if (policyFiles.length === 0) {
+        console.warn('No .rego files found in policies directory');
+      }
 
       for (const file of policyFiles) {
         const policyPath = path.join(policiesDir, file);
