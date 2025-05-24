@@ -136,7 +136,11 @@ You can safely run this script multiple times; it will not create duplicates.
 
 ### Authentication
 
-First, get a JWT token by logging in:
+The system supports both JWT and API Key authentication:
+
+### 1. JWT Authentication
+
+Get a JWT token by logging in:
 
 ```bash
 curl -X POST http://localhost:3001/auth/login \
@@ -146,6 +150,81 @@ curl -X POST http://localhost:3001/auth/login \
     "password": "admin123"
   }'
 ```
+
+Use the JWT token in subsequent requests:
+```bash
+curl -X GET 'http://localhost:3001/roles?tenantId=TENANT_ID' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+### 2. API Key Authentication
+
+Configure your API key in the `.env` file:
+```env
+API_KEY=your-api-key-here
+API_KEY_HEADER=X-API-Key
+```
+
+Use the API key in requests:
+```bash
+curl -X GET 'http://localhost:3001/roles?tenantId=TENANT_ID' \
+  -H 'X-API-Key: your-api-key-here'
+```
+
+### 3. Authentication Modes
+
+The system supports three authentication modes:
+
+1. **JWT Mode** (`AUTH_MODE=jwt`):
+   - Uses JWT tokens for authentication
+   - Tokens are obtained through the `/auth/login` endpoint
+   - Include token in requests using the `Authorization: Bearer <token>` header
+
+2. **API Key Mode** (`AUTH_MODE=api-key`):
+   - Uses API keys for authentication
+   - Configure API key in `.env` file
+   - Include API key in requests using the `X-API-Key` header
+
+3. **Both Modes** (`AUTH_MODE=both`):
+   - Supports both JWT and API key authentication
+   - Tries JWT first, falls back to API key if JWT fails
+   - Useful for transitioning between authentication methods
+
+To switch between modes, update the `AUTH_MODE` environment variable in your `.env` file.
+
+### Example API Calls
+
+1. **Using JWT**:
+```bash
+# Login to get JWT token
+curl -X POST http://localhost:3001/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@example.com",
+    "password": "admin123"
+  }'
+
+# Use JWT token
+curl -X GET 'http://localhost:3001/roles?tenantId=TENANT_ID' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+2. **Using API Key**:
+```bash
+# Direct API key usage
+curl -X GET 'http://localhost:3001/roles?tenantId=TENANT_ID' \
+  -H 'X-API-Key: your-api-key-here'
+```
+
+3. **Using Both (JWT with API Key fallback)**:
+```bash
+# Try JWT first, falls back to API key if JWT fails
+curl -X GET 'http://localhost:3001/roles?tenantId=TENANT_ID' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -H 'X-API-Key: your-api-key-here'
+```
+
+Note: Replace `TENANT_ID`, `YOUR_JWT_TOKEN`, and `your-api-key-here` with actual values from your configuration.
 
 ### Roles
 
@@ -244,32 +323,11 @@ curl -X GET 'http://localhost:3001/userTenantRole/check?userId=USER_ID&tenantId=
 
 Note: Replace `TENANT_ID`, `USER_ID`, `ROLE_ID`, and `YOUR_JWT_TOKEN` with actual values from your database.
 
-## Authentication
-
-The system supports three authentication modes:
-
-1. **JWT Mode** (`AUTH_MODE=jwt`):
-   - Uses JWT tokens for authentication
-   - Tokens are obtained through the `/auth/login` endpoint
-   - Include token in requests using the `Authorization: Bearer <token>` header
-
-2. **API Key Mode** (`AUTH_MODE=api-key`):
-   - Uses API keys for authentication
-   - Configure API key in `.env` file
-   - Include API key in requests using the `X-API-Key` header
-
-3. **Both Modes** (`AUTH_MODE=both`):
-   - Supports both JWT and API key authentication
-   - Tries JWT first, falls back to API key if JWT fails
-   - Useful for transitioning between authentication methods
-
-To switch between modes, update the `AUTH_MODE` environment variable in your `.env` file.
-
 ## OPA Integration
 
 The system supports two modes for OPA integration:
 
-### 1. WASM Mode (Default)
+### 1. WASM Mode 
 
 In WASM mode, policies are compiled to WebAssembly and loaded directly into the Node.js process.
 
@@ -282,7 +340,7 @@ cd backend
 ./scripts/compile-policies.sh
 ```
 
-### 2. HTTP Mode
+### 2. HTTP Mode (Default)
 
 In HTTP mode, policies are evaluated by a separate OPA server.
 
