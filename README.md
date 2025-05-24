@@ -7,9 +7,16 @@ A modern Role-Based Access Control (RBAC) system built with Fastify, Open Policy
 ```
 .
 ├── backend/          # Fastify backend server
-└── opa/             # OPA policies and configurations [needed in WASM mode, in http mode this is of no use]
-    ├── policies/    # Rego policy files 
-    └── wasm/        # Compiled WASM files
+│   ├── src/         # Source code
+│   │   ├── models/  # Database models
+│   │   ├── routes/  # API routes
+│   │   ├── services/# Business logic
+│   │   └── server.js# Main application file
+│   ├── scripts/     # Utility scripts
+│   ├── opa/         # OPA policies and configurations
+│   │   └── policies/# Rego policy files and data
+│   └── Dockerfile   # Backend service container definition
+└── scripts/         # Project-wide utility scripts
 ```
 
 ## Features
@@ -67,8 +74,6 @@ For more installation options and details, visit the [official OPA documentation
 
 ## Getting Started
 
-### Option 1: Local Development
-
 1. Clone the repository
 2. Install dependencies:
    ```bash
@@ -116,53 +121,6 @@ For more installation options and details, visit the [official OPA documentation
    cd backend
    yarn dev
    ```
-
-### Option 2: Docker Deployment
-
-1. Clone the repository
-
-2. Build and start the services:
-   ```bash
-   docker compose up --build
-   ```
-
-   This will start:
-   - MongoDB on port 27017
-   - OPA server on port 8181
-   - Backend service on port 3001
-
-3. To run in detached mode:
-   ```bash
-   docker compose up -d
-   ```
-
-4. To stop the services:
-   ```bash
-   docker compose down
-   ```
-
-5. To view logs:
-   ```bash
-   docker compose logs -f
-   ```
-
-6. To rebuild and restart a specific service:
-   ```bash
-   docker compose up -d --build backend
-   ```
-
-The Docker setup includes:
-- MongoDB 6.0 with persistent volume
-- OPA 1.4.2 with policy files mounted
-- Backend service with hot-reloading for development
-- Health checks for OPA service
-- Proper service dependencies and startup order
-
-Note: For production deployment, make sure to:
-1. Change the default secrets in docker-compose.yml
-2. Use proper volume management
-3. Configure proper networking and security
-4. Set appropriate resource limits
 
 ## Seeding the Database
 
@@ -391,7 +349,52 @@ cd backend
 
 ### 2. HTTP Mode (Default)
 
-In HTTP mode, policies are evaluated by a separate OPA server.
+In HTTP mode, policies are evaluated by a separate OPA server. The system automatically:
+
+1. Loads all `.rego` files from the `opa/policies` directory
+2. Loads `data.json` from the `opa/policies` directory if it exists
+3. Uploads both policies and data to the OPA server during initialization
+
+File Structure:
+```
+opa/
+├── policies/
+│   ├── rbac.rego          # RBAC policy
+│   ├── rbac_advanced.rego # Advanced RBAC policy
+│   └── data.json         # Policy data (optional)
+└── wasm/                 # Compiled WASM files (for WASM mode)
+```
+
+The `data.json` file should follow this structure:
+```json
+{
+  "roles": [
+    {
+      "type": "admin",
+      "permissions": [
+        {
+          "resource": "profile",
+          "actions": ["read", "write"]
+        }
+      ]
+    }
+  ],
+  "tenants": ["tenant1", "tenant2"],
+  "tenant_users": {
+    "tenant1": {
+      "user1": true
+    }
+  },
+  "users": {
+    "user1": {
+      "status": "active",
+      "role": "admin"
+    }
+  }
+}
+```
+
+To use HTTP mode:
 
 ```bash
 # Start OPA server with verbose logging

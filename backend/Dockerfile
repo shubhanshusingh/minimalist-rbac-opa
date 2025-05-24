@@ -16,6 +16,12 @@ COPY package.json yarn.lock .yarnrc.yml ./
 COPY .yarn ./.yarn
 RUN yarn install
 
+# Create OPA directories
+RUN mkdir -p /opa/policies /opa/wasm
+
+# Copy OPA policies and data
+COPY opa/policies /opa/policies/
+
 # Copy app source
 COPY . .
 
