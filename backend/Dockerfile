@@ -7,9 +7,14 @@ RUN wget -O /usr/local/bin/opa https://github.com/open-policy-agent/opa/releases
 # Create app directory
 WORKDIR /app
 
+# Enable Corepack and install dependencies
+RUN corepack enable && \
+    corepack prepare yarn@4.9.1 --activate
+
 # Install app dependencies
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn ./.yarn
+RUN yarn install
 
 # Copy app source
 COPY . .
